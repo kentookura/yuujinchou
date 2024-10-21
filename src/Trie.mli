@@ -78,6 +78,13 @@ val filter : ?prefix:bwd_path -> (bwd_path -> 'data * 'tag -> bool) -> ('data, '
 *)
 val filter_map : ?prefix:bwd_path -> (bwd_path -> 'data1 * 'tag1 -> ('data2 * 'tag2) option) -> ('data1, 'tag1) t -> ('data2, 'tag2) t
 
+(** [complete ~cutoff:i p trie] returns the list of paths in [trie] with edit distance to p less than i, sorted by edit distance in ascending order. This can be used to implement autocomplete functionality and diagnostics that suggest alternative names if a path failed to resolve.
+*)
+val complete : ?prefix:bwd_path -> cutoff:int -> bwd_path -> ('data, 'tag) t -> (bwd_path * int) list
+
+(** A simple implementation of the Levenshtein edit distance algorithm, used in {!val:complete} complete*)
+val edit_distance : cutoff:int -> string -> string -> int option
+
 (** {1 Updating} *)
 
 (** [update_subtree p f t] replaces the subtree [t'] rooted at [p] in [t] with [f t']. *)

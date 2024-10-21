@@ -106,3 +106,23 @@ let retag_subtree pre t l =
   List.map (fun ((p, (d, _)) as b) -> if Option.is_some (split_path pre p) then p, (d, t) else b) l
 let untag l = retag () l
 let set_of_tags cmp l = List.to_seq @@ List.sort_uniq cmp @@ List.map (fun (_, (_, t)) -> t) l
+
+let edit_distance = Yuujinchou.Trie.edit_distance
+
+let complete ?prefix ~(cutoff : int) (p : bwd_path) (t : ('data, 'tag) t) : (bwd_path * int) list = 
+  let compare p d = 
+    edit_distance ~cutoff (String.concat "" (Bwd.to_list p)) (String.concat "" (Bwd.to_list d))
+  in
+  filter_map ?prefix (fun q _ -> 
+    match compare p q with
+    | Some i -> 
+      if i > cutoff then 
+        None 
+      else 
+        (Some (q, i))
+    | None -> None
+  ) t
+  |> to_seq
+  |> Seq.map snd
+  |> List.of_seq
+  |> List.sort (fun a b -> Int.compare (snd a) (snd b))
