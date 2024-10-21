@@ -33,8 +33,8 @@
   
 [Info] Got the following completion items for path zoo:
   foo, distance: 1
-  goo, distance: 1
   fooo, distance: 2
+  goo, distance: 1
   ogoo, distance: 2
   z.y, distance: 2
   

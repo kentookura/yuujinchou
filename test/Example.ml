@@ -82,7 +82,11 @@ struct
         pp_path typo pp_context context;
       List.iter
         (fun (path, dist) -> Format.printf "%a, distance: %i@;" pp_path path dist)
-        (Trie.complete ~cutoff:2 typo input);
+        (Trie.complete ~cutoff:2 typo input
+          |> Trie.to_seq
+          |> List.of_seq
+          |> List.map (fun (path, (_, dist)) -> (Bwd.of_list path), dist)
+        );
       Format.printf "@]@.";
       input
 end

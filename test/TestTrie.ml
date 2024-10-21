@@ -251,7 +251,7 @@ let test_set_of_tags =
 let test_complete =
   Q.Test.make ~count ~name:"complete" Q.Gen.(pair gen_bwd_path gen_list) ~print:Q.Print.(pair print_bwd_path print_list)
     (fun (p, l) -> 
-      (Trie.complete ~cutoff:2 p (of_list l)) = ListAsTrie.complete ~cutoff:2 p l)
+      (to_list @@ Trie.complete ~cutoff:2 p (of_list l)) = ListAsTrie.complete ~cutoff:2 p l)
 
 let () =
   exit @@

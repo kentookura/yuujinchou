@@ -109,20 +109,16 @@ let set_of_tags cmp l = List.to_seq @@ List.sort_uniq cmp @@ List.map (fun (_, (
 
 let edit_distance = Yuujinchou.Trie.edit_distance
 
-let complete ?prefix ~(cutoff : int) (p : bwd_path) (t : ('data, 'tag) t) : (bwd_path * int) list = 
+let complete ?prefix ~(cutoff : int) (p : bwd_path) : ('data, 'tag) t -> ('data, int) t =
   let compare p d = 
     edit_distance ~cutoff (String.concat "" (Bwd.to_list p)) (String.concat "" (Bwd.to_list d))
   in
-  filter_map ?prefix (fun q _ -> 
+  filter_map ?prefix (fun q (data, _) -> 
     match compare p q with
     | Some i -> 
       if i > cutoff then 
         None 
       else 
-        (Some (q, i))
+        (Some (data, i))
     | None -> None
-  ) t
-  |> to_seq
-  |> Seq.map snd
-  |> List.of_seq
-  |> List.sort (fun a b -> Int.compare (snd a) (snd b))
+  )
